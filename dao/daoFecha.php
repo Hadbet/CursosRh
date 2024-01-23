@@ -14,7 +14,7 @@ function ContadorApu($Curso)
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    $datos = mysqli_query($conex, "SELECT `Fecha` FROM `Cursos` WHERE `NombreCurso` = '$Curso' `Fecha` BETWEEN '$fechainicial' and '$fechafinal'");
+    $datos = mysqli_query($conex, "SELECT `Fecha` FROM `Cursos` WHERE `NombreCurso` = '$Curso' and `Fecha` BETWEEN '$fechainicial' and '$fechafinal'");
     $resultado = mysqli_fetch_all($datos, MYSQLI_ASSOC);
     echo json_encode(array("data" => $resultado));
 }
