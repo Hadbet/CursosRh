@@ -2,9 +2,11 @@
 
 include_once('db/db_RH.php');
 
-ContadorApu();
+$Curso = $_GET['curso'];
 
-function ContadorApu()
+ContadorApu($Curso);
+
+function ContadorApu($Curso)
 {
     $fechainicial = date('Y-m-01');
     $fechafinal = date('Y-m-t');
@@ -12,8 +14,7 @@ function ContadorApu()
     $con = new LocalConector();
     $conex = $con->conectar();
 
-    $datos = mysqli_query($conex, "SELECT `NombreCurso` FROM `Cursos` WHERE `Fecha` BETWEEN '$fechainicial' and '$fechafinal' GROUP by `NombreCurso`");
-    echo"SELECT `NombreCurso` FROM `Cursos` WHERE `Fecha` BETWEEN '$fechainicial' and '$fechafinal' GROUP by `NombreCurso`";
+    $datos = mysqli_query($conex, "SELECT `Fecha` FROM `Cursos` WHERE `NombreCurso` = '$Curso' `Fecha` BETWEEN '$fechainicial' and '$fechafinal'");
     $resultado = mysqli_fetch_all($datos, MYSQLI_ASSOC);
     echo json_encode(array("data" => $resultado));
 }

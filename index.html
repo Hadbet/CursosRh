@@ -168,16 +168,23 @@
                 <div class="col-12 col-12-medium">
                     <hr>
                 </div>
-                <div class="col-6 col-12-xsmall">
+                <div class="col-4 col-12-xsmall">
                     <label style="text-align: center;">Curso:</label>
-                    <select name="demo-category" id="cbTipoAusentismo" onchange="mostrarSeccionTipo()">
+                    <select name="demo-category" id="cbCurso">
 
                     </select>
                 </div>
 
-                <div class="col-6 col-12-xsmall">
+                <div class="col-4 col-12-xsmall">
+                    <label style="text-align: center;">Fecha:</label>
+                    <select name="demo-category" id="cbFecha" onchange="llenarFecha()">
+
+                    </select>
+                </div>
+
+                <div class="col-4 col-12-xsmall">
                     <label style="text-align: center;">Horario:</label>
-                    <select name="demo-category" id="cbTipoAusentismo" onchange="mostrarSeccionTipo()">
+                    <select name="demo-category" id="cbHorario" onchange="llenarHorario()">
 
                     </select>
                 </div>
@@ -272,6 +279,58 @@
     function toggleMenu() {
         var menu = document.getElementById("menuNavegacion");
         menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    llenarCursos();
+
+    function llenarCursos() {
+        $.getJSON('https://arketipo.mx/RH/Cursos/dao/daoCurso.php', function (data) {
+            var select = document.getElementById("cbCurso");
+            for (var i = 0; i < data.data.length; i++) {
+                var createOption = document.createElement("option");
+                createOption.text = data.data[i].NombreCurso;
+                createOption.value = data.data[i].NombreCurso;
+                select.appendChild(createOption);
+            }
+        });
+    }
+
+    function llenarFecha() {
+        $.getJSON('https://arketipo.mx/RH/Cursos/dao/daoFecha.php?curso=' + document.getElementById("cbCurso").value, function (data) {
+            var selectS = document.getElementById("cbFecha");
+            selectS.innerHTML = "";
+
+            var createOptionDefS = document.createElement("option");
+            createOptionDefS.text = "Seleccione";
+            createOptionDefS.value = "";
+            selectS.appendChild(createOptionDefS);
+
+            for (var i = 0; i < data.data.length; i++) {
+                var createOptionS = document.createElement("option");
+                createOptionS.text = data.data[i].Fecha;
+                createOptionS.value = data.data[i].Fecha;
+                selectS.appendChild(createOptionS);
+            }
+        });
+    }
+
+    function llenarHorario() {
+        $.getJSON('https://arketipo.mx/RH/Cursos/dao/daoHorario.php?curso=' + document.getElementById("cbCurso").value +"&fecha="+ document.getElementById("cbFecha").value, function (data) {
+            var selectS = document.getElementById("cbHorario");
+            selectS.innerHTML = "";
+
+            var createOptionDefS = document.createElement("option");
+            createOptionDefS.text = "Seleccione";
+            createOptionDefS.value = "";
+            selectS.appendChild(createOptionDefS);
+
+            for (var i = 0; i < data.data.length; i++) {
+                var createOptionS = document.createElement("option");
+                createOptionS.text = data.data[i].Horario;
+                createOptionS.value = data.data[i].Horario;
+                selectS.appendChild(createOptionS);
+            }
+        });
     }
 
     llenarAPU();
@@ -408,20 +467,6 @@
         });
     }
 
-    function historicoUsuario() {
-        var historicosReport = document.getElementById("historico");
-        return new Promise(function (resolve) {
-            $.getJSON('https://arketipo.mx/RH/Entrevistas/dao/daoExpedienteUsuario.php?nomina=' + nomina, function (data) {
-                if (data && data.data && data.data.length > 0) {
-                    for (var i = 0; i < data.data.length; i++) {
-                        historicosReport.innerHTML += "<p><strong>" + data.data[i].FechaAusentismo + "</strong> : " + data.data[i].TipoAusencia + ".</p>";
-                    }
-                } else {
-                    document.getElementById("seccionHistorico").style.display = "none";
-                }
-            });
-        });
-    }
 
     function llenarNomina(nomina) {
         if (nomina.length === 1) {
